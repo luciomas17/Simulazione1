@@ -48,10 +48,10 @@ public class Model {
 		return dao.getAnnoList();
 	}
 	
-	public List<District> getNeighborsOf(District d) {
+	public List<Neighbor> getNeighborsOf(District d) {
 		List<District> neighbors = Graphs.neighborListOf(this.graph, d);
 		List<Edge> edges = new ArrayList<>();
-		List<District> neighborsOrdered = new ArrayList<>();
+		List<Neighbor> neighborsOrdered = new ArrayList<>();
 		
 		for(District n : neighbors) {
 			if(!d.equals(n)) {
@@ -63,7 +63,7 @@ public class Model {
 		Collections.sort(edges);
 		
 		for(Edge e : edges)
-			neighborsOrdered.add(e.getD2());
+			neighborsOrdered.add(new Neighbor(e.getD2(), e.getWeight()));
 			
 		return neighborsOrdered;
 	}

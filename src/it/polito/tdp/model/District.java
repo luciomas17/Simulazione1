@@ -53,7 +53,7 @@ public class District {
 
 	@Override
 	public String toString() {
-		return "District " + id;
+		return "Distretto " + id;
 	}
 	
 }

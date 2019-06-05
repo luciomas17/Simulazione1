@@ -5,9 +5,12 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.model.District;
 import it.polito.tdp.model.Model;
+import it.polito.tdp.model.Neighbor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -26,13 +29,13 @@ public class CrimesController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGiorno"
-    private ComboBox<?> boxGiorno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxGiorno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnCreaReteCittadina"
     private Button btnCreaReteCittadina; // Value injected by FXMLLoader
@@ -48,7 +51,30 @@ public class CrimesController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
+    	this.boxMese.getSelectionModel().clearSelection();
+    	this.boxGiorno.getSelectionModel().clearSelection();
+    	this.txtN.clear();
+    	this.txtResult.clear();
     	
+    	if(this.boxAnno.getSelectionModel().isEmpty()) {
+    		this.txtResult.appendText("Selezionare un anno.");
+    		return;
+    	}
+    	
+    	int year = this.boxAnno.getSelectionModel().getSelectedItem();
+    	model.createGraph(year);
+    	this.txtResult.appendText("Rete Cittadina creata.\n\n");
+    	
+    	List<District> districts = model.getDistrictsList();
+    	for(int i = 0; i < districts.size(); i++) {
+			List<Neighbor> neighbors = model.getNeighborsOf(districts.get(i));
+			this.txtResult.appendText("Distretti adiacenti al " + districts.get(i) + ":\n");
+			for(Neighbor n : neighbors)
+				this.txtResult.appendText(n + "\n");
+			
+			if(i < districts.size()-1)
+				this.txtResult.appendText("\n");
+		}
     }
 
     @FXML
@@ -70,5 +96,11 @@ public class CrimesController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	addItemsToBoxAnno();
     }
+
+	private void addItemsToBoxAnno() {
+		this.boxAnno.getItems().addAll(model.getAnnoList());
+	}
+	
 }

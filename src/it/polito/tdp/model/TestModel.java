@@ -13,7 +13,7 @@ public class TestModel {
 		System.out.println("");
 		List<District> districts = model.getDistrictsList();
 		for(District d : districts) {
-			List<District> neighbors = model.getNeighborsOf(d);
+			List<Neighbor> neighbors = model.getNeighborsOf(d);
 			System.out.println("Vicini distretto " + d + ":");
 			System.out.println(neighbors);
 			System.out.println("");
