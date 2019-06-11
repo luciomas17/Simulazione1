@@ -79,7 +79,31 @@ public class CrimesController {
 
     @FXML
     void doSimula(ActionEvent event) {
-
+    	this.txtResult.clear();
+    	if(this.boxAnno.getSelectionModel().isEmpty()) {
+    		this.txtResult.appendText("Selezionare un anno.");
+    		return;
+    	}
+    	if(this.boxMese.getSelectionModel().isEmpty()) {
+    		this.txtResult.appendText("Selezionare un mese.");
+    		return;
+    	}
+    	if(this.boxGiorno.getSelectionModel().isEmpty()) {
+    		this.txtResult.appendText("Selezionare un giorno.");
+    		return;
+    	}
+    	try {
+			if(Integer.parseInt(this.txtN.getText()) < 1 || Integer.parseInt(this.txtN.getText()) > 10) {
+				this.txtResult.appendText("Inserire un numero N compreso tra 1 e 10.");
+				return;
+			}
+		} catch (NumberFormatException e) {
+			this.txtResult.appendText("Inserire un numero N valido.");
+			e.printStackTrace();
+		}
+    	
+    	// SIMULAZIONE
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -97,10 +121,41 @@ public class CrimesController {
     public void setModel(Model model) {
     	this.model = model;
     	addItemsToBoxAnno();
+    	addItemsToBoxMese();
     }
 
 	private void addItemsToBoxAnno() {
 		this.boxAnno.getItems().addAll(model.getAnnoList());
+	}
+	
+	private void addItemsToBoxMese() {
+		for(int i = 1; i <= 12; i ++) 
+			this.boxMese.getItems().add(i);
+	}
+	
+	@FXML
+	void addItemsToBoxGiorno() {
+		if(!this.boxMese.getSelectionModel().isEmpty()) {
+			this.boxGiorno.getItems().clear();
+			int mese = this.boxMese.getSelectionModel().getSelectedItem();
+			
+			if(mese == 2) {
+				int anno = this.boxAnno.getSelectionModel().getSelectedItem();
+				if((anno % 4) == 0 || (anno % 400) == 0) {
+					for(int i = 1; i <= 29; i ++) 
+						this.boxGiorno.getItems().add(i);
+				} else {
+					for(int i = 1; i <= 28; i ++) 
+						this.boxGiorno.getItems().add(i);
+				}
+			} else if(mese == 1 || mese == 3 || mese == 5 || mese == 7 || mese == 8|| mese == 10 || mese == 12) {
+				for(int i = 1; i <= 31; i ++) 
+					this.boxGiorno.getItems().add(i);
+			} else {
+				for(int i = 1; i <= 30; i ++) 
+					this.boxGiorno.getItems().add(i);
+			}
+		}
 	}
 	
 }

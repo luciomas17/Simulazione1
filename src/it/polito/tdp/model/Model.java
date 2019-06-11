@@ -9,6 +9,7 @@ import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
@@ -72,4 +73,24 @@ public class Model {
 		return this.districts;
 	}
 	
+	public int determinaDistrettoMenoCriminoso(int anno, int mese, int giorno) {
+		return dao.determinaDistrettoMenoCriminoso(anno, mese, giorno);
+	}
+	
+	public LatLng determinaPosizioneDistretto(int districtId) {
+		LatLng pos = null;
+		
+		for(District d : districts) {
+			if(d.getId() == districtId) {
+				pos = d.getAvgLatLng();
+				break;
+			}
+		}
+		
+		return pos;
+	}
+	
+	public List<Event> listEventiCriminosi(int anno, int mese, int giorno, int districtId) {
+		return dao.listEventiCriminosi(anno, mese, giorno, districtId);
+	}
 }
