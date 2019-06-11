@@ -23,6 +23,7 @@ public class Model {
 	
 	public Model() {
 		this.dao = new EventsDao();
+		this.districts = new ArrayList<>();
 	}
 	
 	public void createGraph(int year) {

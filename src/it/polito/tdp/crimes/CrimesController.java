@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import it.polito.tdp.model.District;
 import it.polito.tdp.model.Model;
 import it.polito.tdp.model.Neighbor;
+import it.polito.tdp.model.Simulatore;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -21,6 +22,7 @@ import javafx.scene.control.TextField;
 public class CrimesController {
 
 	private Model model;
+	private Simulatore sim;
 	
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -51,10 +53,10 @@ public class CrimesController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
+    	this.txtResult.clear();
     	this.boxMese.getSelectionModel().clearSelection();
     	this.boxGiorno.getSelectionModel().clearSelection();
     	this.txtN.clear();
-    	this.txtResult.clear();
     	
     	if(this.boxAnno.getSelectionModel().isEmpty()) {
     		this.txtResult.appendText("Selezionare un anno.");
@@ -80,30 +82,45 @@ public class CrimesController {
     @FXML
     void doSimula(ActionEvent event) {
     	this.txtResult.clear();
-    	if(this.boxAnno.getSelectionModel().isEmpty()) {
-    		this.txtResult.appendText("Selezionare un anno.");
-    		return;
-    	}
-    	if(this.boxMese.getSelectionModel().isEmpty()) {
-    		this.txtResult.appendText("Selezionare un mese.");
-    		return;
-    	}
-    	if(this.boxGiorno.getSelectionModel().isEmpty()) {
-    		this.txtResult.appendText("Selezionare un giorno.");
-    		return;
-    	}
-    	try {
-			if(Integer.parseInt(this.txtN.getText()) < 1 || Integer.parseInt(this.txtN.getText()) > 10) {
-				this.txtResult.appendText("Inserire un numero N compreso tra 1 e 10.");
-				return;
-			}
-		} catch (NumberFormatException e) {
-			this.txtResult.appendText("Inserire un numero N valido.");
-			e.printStackTrace();
-		}
     	
-    	// SIMULAZIONE
-    	
+    	if(model.getDistrictsList().size() != 0) {
+    		int anno, mese, giorno, N;
+        	
+        	if(this.boxAnno.getSelectionModel().isEmpty()) {
+        		this.txtResult.appendText("Selezionare un anno.");
+        		return;
+        	}
+        	if(this.boxMese.getSelectionModel().isEmpty()) {
+        		this.txtResult.appendText("Selezionare un mese.");
+        		return;
+        	}
+        	if(this.boxGiorno.getSelectionModel().isEmpty()) {
+        		this.txtResult.appendText("Selezionare un giorno.");
+        		return;
+        	}
+        	try {
+    			if(Integer.parseInt(this.txtN.getText()) < 1 || Integer.parseInt(this.txtN.getText()) > 10) {
+    				this.txtResult.appendText("Inserire un numero N compreso tra 1 e 10.");
+    				return;
+    			}
+    		} catch (NumberFormatException e) {
+    			this.txtResult.appendText("Inserire un numero N valido.");
+    			e.printStackTrace();
+    		}
+        	
+        	anno = boxAnno.getSelectionModel().getSelectedItem();
+        	mese = boxMese.getSelectionModel().getSelectedItem();
+        	giorno = boxGiorno.getSelectionModel().getSelectedItem();
+        	N = Integer.parseInt(txtN.getText());
+        	
+        	sim.init(N, anno, mese, giorno);
+        	sim.run();
+        	
+        	this.txtResult.appendText("Casi gestiti: " + sim.getNumEventiGestiti() + "\n");
+        	this.txtResult.appendText("Casi NON gestiti: " + sim.getNumEventiMalGestiti());
+        	
+    	} else
+    		this.txtResult.appendText("Creare prima la rete cittadina.");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -120,6 +137,7 @@ public class CrimesController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	this.sim = new Simulatore(model);
     	addItemsToBoxAnno();
     	addItemsToBoxMese();
     }

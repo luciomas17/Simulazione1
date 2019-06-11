@@ -21,7 +21,7 @@ public class TestModel {
 		
 		Simulatore sim = new Simulatore(model);
 		
-		sim.init(1, 2015, 1, 14);
+		sim.init(2, 2015, 1, 14);
 		
 		sim.run();
 		
